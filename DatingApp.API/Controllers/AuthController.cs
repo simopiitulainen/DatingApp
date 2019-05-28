@@ -50,6 +50,7 @@ namespace DatingApp.API.Controllers
 
          [HttpPost("login")]
 
+         // Kirjaa käyttäjän sisään AuthRepositoryn Login()-metodilla. Luo käyttäjälle tokenin tunnistusta varten
          public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
          {
              var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
@@ -84,5 +85,9 @@ namespace DatingApp.API.Controllers
                 token = tokenHandler.WriteToken(token)
             });
          }
+
+
+
+
     }
 }

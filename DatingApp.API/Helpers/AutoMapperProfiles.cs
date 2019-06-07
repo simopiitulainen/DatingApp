@@ -4,7 +4,8 @@ using DatingApp.API.Dtos;
 using DatingApp.API.Models;
 
 namespace DatingApp.API.Helpers
-{
+{       
+    //mappaa Dto:t User-modeleihin
     public class AutoMapperProfiles : Profile
     {
         public AutoMapperProfiles()
@@ -24,6 +25,7 @@ namespace DatingApp.API.Helpers
                     opt.ResolveUsing(d => d.DateOfBirth.CalculateAge()); 
                 });
             CreateMap<Photo, PhotosForDetailedDto>();
+            CreateMap<UserForUpdateDto, User>();    
         }
     }
 }

@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.API.Data;
 using DatingApp.API.Dtos;
 using DatingApp.API.Models;
@@ -14,53 +15,55 @@ namespace DatingApp.API.Controllers
 {
 
     [Route("api/[controller]")]
-    
+
     [ApiController]
 
     //Controlleri autentikointiin. sisältää metodit rekisteröinnille ja sisään/uloskirjautumiselle
-        public class AuthController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
         private readonly IAuthRepository _repo;
-        public AuthController(IAuthRepository repo, IConfiguration config)
+        private readonly IMapper _mapper;
+        public AuthController(IAuthRepository repo, IConfiguration config, IMapper mapper)
         {
+            _mapper = mapper;
             _config = config;
             _repo = repo;
         }
 
         [HttpPost("register")]
 
-        public async Task<IActionResult> Register (UserForRegisterDto userForRegisterDto)
+        public async Task<IActionResult> Register(UserForRegisterDto userForRegisterDto)
         {
 
-                userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
 
-                if (await _repo.UserExists(userForRegisterDto.Username))
-                    return BadRequest("Username already exists");
+            if (await _repo.UserExists(userForRegisterDto.Username))
+                return BadRequest("Username already exists");
 
-                var userToCreate = new User
-                {
-                     Username = userForRegisterDto.Username
-                };
+            var userToCreate = new User
+            {
+                Username = userForRegisterDto.Username
+            };
 
-                    var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
+            var createdUser = await _repo.Register(userToCreate, userForRegisterDto.Password);
 
-                    return StatusCode(201); //Korjataan myöhemmin
-         }
+            return StatusCode(201); //Korjataan myöhemmin
+        }
 
-         [HttpPost("login")]
+        [HttpPost("login")]
 
-         // Kirjaa käyttäjän sisään AuthRepositoryn Login()-metodilla. Luo käyttäjälle tokenin tunnistusta varten
-         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
-         {
-           
+        // Kirjaa käyttäjän sisään AuthRepositoryn Login()-metodilla. Luo käyttäjälle tokenin tunnistusta varten
+        public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
+        {
+
 
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
 
-             if (userFromRepo == null)
+            if (userFromRepo == null)
                 return Unauthorized();
 
-            
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
@@ -72,7 +75,7 @@ namespace DatingApp.API.Controllers
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
-            var tokenDescriptor = new SecurityTokenDescriptor 
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(1),
@@ -83,10 +86,14 @@ namespace DatingApp.API.Controllers
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new {
-                token = tokenHandler.WriteToken(token)
+            var user = _mapper.Map<UserForListDto>(userFromRepo);
+
+            return Ok(new
+            {
+                token = tokenHandler.WriteToken(token),
+                user
             });
 
-         }
+        }
     }
 }

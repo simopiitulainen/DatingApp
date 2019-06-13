@@ -58,7 +58,7 @@ export class MemberDetailComponent implements OnInit {
 }
 
 
-
+}
 
 
 /*
@@ -72,4 +72,4 @@ export class MemberDetailComponent implements OnInit {
       }
     );
   }
-  */
+*/

@@ -14,5 +14,7 @@ namespace DatingApp.API.Dtos
     
         public bool IsMain { get; set; }
 
+        public bool IsApproved { get; set; }
+
     }
 }

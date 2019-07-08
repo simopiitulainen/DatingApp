@@ -14,7 +14,7 @@ using Microsoft.Extensions.Options;
 
 namespace DatingApp.API.Controllers
 {
-    [Authorize]
+   
     [Route("api/users/{userId}/photos")]
     [ApiController]
     public class PhotosController : ControllerBase
@@ -54,7 +54,7 @@ namespace DatingApp.API.Controllers
 
         }
 
-
+        /*  */
         [HttpPost]
         public async Task<IActionResult> AddPhotoForUser(int userId,
         [FromForm] PhotoForCreationDto photoForCreationDto)
@@ -85,10 +85,10 @@ namespace DatingApp.API.Controllers
             photoForCreationDto.Url = uploadResult.Uri.ToString();
             photoForCreationDto.PublicId = uploadResult.PublicId;
 
-            var photo = _mapper.Map<Photo>(photoForCreationDto); // korjataan
+            var photo = _mapper.Map<Photo>(photoForCreationDto); 
 
-            if (!userFromRepo.Photos.Any(u => u.IsMain))
-                photo.IsMain = true;
+          // if (!userFromRepo.Photos.Any(u => u.IsMain))
+            // photo.IsMain = true;
 
             userFromRepo.Photos.Add(photo);
 
@@ -104,7 +104,7 @@ namespace DatingApp.API.Controllers
 
         }
 
-
+        /*  */
         [HttpPost("{id}/setMain")]
         public async Task<IActionResult> SetMainPhoto(int userId, int id)
         {
@@ -119,13 +119,13 @@ namespace DatingApp.API.Controllers
 
             var photoFromRepo = await _repo.GetPhoto(id);
 
-            if (photoFromRepo.IsMain)
+            if (photoFromRepo.IsMain || photoFromRepo.IsApproved == false)
                 return BadRequest("This is already the main photo!");
-
 
             var currentMainPhoto = await _repo.GetMainPhotoForUser(userId);
 
-            currentMainPhoto.IsMain = false;
+            if(currentMainPhoto != null)
+                currentMainPhoto.IsMain = false;
 
             photoFromRepo.IsMain = true;
 
@@ -133,10 +133,10 @@ namespace DatingApp.API.Controllers
                 return NoContent();
 
             return BadRequest("Could not set photo to main");
-
-
         }
 
+
+        /*  */
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhoto(int userId, int id)
         {
@@ -148,40 +148,29 @@ namespace DatingApp.API.Controllers
             {
                 return Unauthorized();
             }
-
             var photoFromRepo = await _repo.GetPhoto(id);
-
             if (photoFromRepo.IsMain)
-                return BadRequest("2You cannot delet your main photo!");
+                return BadRequest("You cannot delete your main photo!");
 
             if (photoFromRepo.PublicId != null)
             {
                 var deleteParams = new DeletionParams(photoFromRepo.PublicId);
-
                 var result = _cloudinary.Destroy(deleteParams);
-
                 if (result.Result == "ok")
                 {
                     _repo.Delete(photoFromRepo);
                 }
             }
-
             if (photoFromRepo.PublicId == null)
             {
                 _repo.Delete(photoFromRepo);
             }
-
+            
             if (await _repo.SaveAll())
                 return Ok();
 
             return BadRequest("Failed to delete the photo");
-
-
         }
-
+   
     }
-
-
-
-
 }

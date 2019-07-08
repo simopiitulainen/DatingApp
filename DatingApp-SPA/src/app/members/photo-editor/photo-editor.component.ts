@@ -28,7 +28,7 @@ export class PhotoEditorComponent implements OnInit {
     this.initializeUploader();
   }
 
-   fileOverBase(e:any):void {
+   fileOverBase(e:any): void {
     this.hasBaseDropZoneOver = e;
   }
 
@@ -54,7 +54,8 @@ export class PhotoEditorComponent implements OnInit {
           url: res.url,
           dateAdded: res.dateAdded,
           description: res.description,
-          isMain: res.isMain
+          isMain: res.isMain,
+          isApproved: false
         };
         this.photos.push(photo);
         if (photo.isMain) {
@@ -70,7 +71,9 @@ export class PhotoEditorComponent implements OnInit {
 
     this.userService.setMainPhoto(this.authService.decodedToken.nameid, photo.id).subscribe(() => {
       this.currentMainPhoto = this.photos.filter(p => p.isMain === true) [0];
+      if(this.currentMainPhoto != null) {
       this.currentMainPhoto.isMain = false;
+      }
       photo.isMain = true;
       this.authService.changeMemberPhoto(photo.url);
       this.authService.currentUser.photoUrl = photo.url;

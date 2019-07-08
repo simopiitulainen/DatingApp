@@ -1,20 +1,15 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.API.Models
 {
     /*
         Luokka käyttäjä-objektille. 
      */
-    public class User
+    public class User : IdentityUser <int>
     {
-        public int Id {get; set;}
-
-        public string Username{ get; set; }
-
-        public byte[] PasswordHash {get; set;}
-
-        public byte[] PasswordSalt {get; set;}
+      
 
         public string Gender { get; set; }
 
@@ -45,6 +40,8 @@ namespace DatingApp.API.Models
         public ICollection<Message> MessagesSent { get; set; }
 
         public ICollection<Message> MessagesReceived { get; set; }
+
+        public ICollection<UserRole> UserRoles { get; set; }
     }
 
 

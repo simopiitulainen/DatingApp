@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace DatingApp.API.Controllers
 {
     [ServiceFilter(typeof(LogUserActivity))]
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -59,9 +58,6 @@ namespace DatingApp.API.Controllers
 
             var userToReturn = _mapper.Map<UserForDetailedDto>(user);
             return Ok(userToReturn);
-
-
-
         }
 
         [HttpPut("{id}")]

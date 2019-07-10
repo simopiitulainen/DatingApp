@@ -1,11 +1,29 @@
-<div class="container">
+<!-- <div class="row">
+  <div class="col-lg">
   <div *ngFor="let photo of photos">
       <div class="card-img-top">
-      <img src="{{photo.url}}" alt="">
+      <img src="{{photo.url}}" alt="" class="">
       <ul class="list-inline member-icons animate text-center">
         <li class="list-inline-item"><button class="btn btn-success" (click)="approvePhoto(photo.id)"  ><i class="fa fa-check"></i></button></li>
         <li class="list-inline-item"><button class="btn btn-primary" (click)="rejectPhoto(photo.id)"><i class="fa fa-trash"></i></button></li>
         </ul>
+      </div>
     </div>
   </div>
 </div>
+ -->
+
+ <div class="row d-flex justify-content-center">
+    
+    <div class *ngFor="let photo of photos">
+      <div >
+        <div class="card ">
+          <img class="card-img-top " src="{{photo.url}}" alt="">
+          
+        </div>
+        <div class="card-footer">
+          <div class="btn-group d-flex">
+              <button class="btn btn-success" (click)="approvePhoto(photo.id)"  ><i class="fa fa-check"></i></button>
+              <button class="btn btn-primary" (click)="rejectPhoto(photo.id)"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>

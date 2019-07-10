@@ -10,7 +10,7 @@ namespace DatingApp.API.Models
     public class User : IdentityUser <int>
     {
       
-
+        
         public string Gender { get; set; }
 
         public DateTime DateOfBirth { get; set; }

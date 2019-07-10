@@ -31,7 +31,9 @@ namespace LiftTracker2.Migrations
 
                     b.Property<DateTime>("LastActive");
 
-                    b.Property<string>("Password");
+                    b.Property<byte[]>("PasswordHash");
+
+                    b.Property<byte[]>("PasswordSalt");
 
                     b.Property<string>("UserName");
 

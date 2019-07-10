@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftTracker2.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20190710070713_initialcreate")]
-    partial class initialcreate
+    [Migration("20190710094311_UpdatedUserEntity")]
+    partial class UpdatedUserEntity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -33,7 +33,9 @@ namespace LiftTracker2.Migrations
 
                     b.Property<DateTime>("LastActive");
 
-                    b.Property<string>("Password");
+                    b.Property<byte[]>("PasswordHash");
+
+                    b.Property<byte[]>("PasswordSalt");
 
                     b.Property<string>("UserName");
 
